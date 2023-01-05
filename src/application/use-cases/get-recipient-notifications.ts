@@ -1,0 +1,35 @@
+import { NotificationRepository } from "../repositories/notifications-repository";
+import { Injectable } from "@nestjs/common";
+import { NotificationNotFound } from "./errors/notification-not-found";
+import { Notification } from "@application/entities/notification";
+
+interface GetRecipientNotificationsRequest {
+    recipientId: string;
+}
+
+interface GetRecipientNotificationsResponse {
+    notifications: Notification[];
+}
+
+
+
+@Injectable()
+export class GetRecipientNotifications {
+
+    constructor(
+        private notificationsRepository: NotificationRepository
+    ){}
+    async execute(
+        request: GetRecipientNotificationsRequest,
+    ): Promise<GetRecipientNotificationsResponse> {
+        const { recipientId } = request;
+
+        const notifications = await this.notificationsRepository.findManyByRecipientId(
+            recipientId
+        );
+    return {
+        notifications,
+    }
+       
+    }
+}
